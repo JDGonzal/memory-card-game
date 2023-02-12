@@ -27,3 +27,5 @@ Fruit icons created by Smashicons - Flaticon: https://www.flaticon.com/free-icon
 📷 Instagram https://www.instagram.com/javascripta...
 
 Add the Extension "Live Server" and restart the Visual Studio Code
+
+Into "style.css" file the last element called ".card .back{" was taken from https://es.pattern.monster/circles-5/,  and copied as "CSS" option
