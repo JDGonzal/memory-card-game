@@ -16,7 +16,7 @@ fetch("./data/cards.json")
 
 function suffleCards() {
   let currentIndex = cards.length;
-  randomIndex =0, temporaryValue=0;
+  (randomIndex = 0), (temporaryValue = 0);
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
@@ -27,20 +27,74 @@ function suffleCards() {
 }
 
 function generateCards() {
-	for(let card of cards) {
-		const cardElement = document.createElement('div');
-		cardElement.classList.add('card');
-		cardElement.setAttribute("data-name",card.name);
-		console.log(card.image);
-		cardElement.innerHTML=`
+  for (let card of cards) {
+    const cardElement = document.createElement("div");
+    cardElement.classList.add("card");
+    cardElement.setAttribute("data-name", card.name);
+    console.log(card.image);
+    cardElement.innerHTML = `
 		<div class="front">
 			<img class ="front-image" src="${card.image}"/>
 		</div>
 		<div class="back"> </div>
 		`;
-		gridContainer.appendChild(cardElement);
-		cardElement.addEventListener("click",flipCard);
-	}
+    gridContainer.appendChild(cardElement);
+    cardElement.addEventListener("click", flipCard);
+  }
 }
 
-function flipCard(){}
+function flipCard() {
+  if (lockBoard) return;
+  if (this === firstCard) return;
+
+  this.classList.add("flipped");
+
+  if (!firstCard) {
+    firstCard = this;
+    return;
+  }
+
+  secondCard = this;
+  score++;
+  document.querySelector(".score").textContent = score;
+  lockBoard = true;
+
+  checkForMatch();
+}
+
+function checkForMatch() {
+  let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+
+  isMatch ? disableCards() : unflipCards();
+}
+
+function disableCards() {
+  firstCard.removeEventListener("click", flipCard);
+  secondCard.removeEventListener("click", flipCard);
+
+  resetBoard();
+}
+
+function unflipCards() {
+  setTimeout(() => {
+    firstCard.classList.remove("flipped");
+    secondCard.classList.remove("flipped");
+    resetBoard();
+  }, 1000);
+}
+
+function resetBoard() {
+	firstCard=null;
+	secondCard=null;
+	lockBoard=false;
+}
+
+function restart() {
+	console.log("Restarting");
+	resetBoard();
+	suffleCards();
+	score=0;
+	document.querySelector(".score").textContent=score;
+	gridContainer.innerHTML = ""; // It is necessary to clar all screen before to draw the cards
+	generateCards();
+}
